@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Registro - ToneQuest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <!-- Registro de Usuário -->
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">
+            <h4>Registro de Usuário</h4>
+        </div>
+        <div class="card-body">
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login de Usuário -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4>Login de Usuário</h4>
+        </div>
+        <div class="card-body">
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="loginEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="loginSenha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="loginSenha" required>
+                </div>
+                <button type="submit" class="btn btn-success">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Registro de Usuário
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+
+        try {
+            const response = await fetch('http://localhost:8081/usuarios/registrar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome, email, senha })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert('Usuário registrado com sucesso!');
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    });
+
+    // Login de Usuário
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const senha = document.getElementById('loginSenha').value;
+
+        try {
+            const response = await fetch('http://localhost:8081/usuarios/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ email, senha })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert('Login bem-sucedido!');
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    });
+
+    // Script Axios
+        document.getElementById('login-button').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+
+        axios.post('http://localhost:8081/usuarios/login', null, {
+        params: {
+        email: email,
+        senha: senha
+    }
+    }).then(response => {
+        console.log(response.data);
+        // Aqui você pode redirecionar ou mostrar uma mensagem de sucesso
+        alert('Login realizado com sucesso!');
+    }).catch(error => {
+        console.error(error);
+        // Aqui você pode exibir uma mensagem de erro ao usuário
+        alert('Erro ao realizar login: ' + error.response.data);
+    });
+    });
+
+</script>
+</body>
+</html>
